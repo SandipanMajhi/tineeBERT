@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 class EmbeddingLayer(nn.Module):
     def __init__(self, vocab_size, embed_size):
@@ -43,5 +44,39 @@ class AbsolutePE(nn.Module):
 
 class MultiheadAttention(nn.Module):
     def __init__(self, embed_size, num_heads, dropout = 0.2, device = "cpu"):
-        pass
+        super().__init__()
+        assert embed_size % num_heads == 0, "Embedding size must be divisible by number of heads"
+        self.device = device
+        self.embed_size = embed_size
+        self.num_heads = num_heads
+        self.head_dim = embed_size // num_heads
+
+        self.lin_q = nn.Linear(embed_size, embed_size)
+        self.lin_k = nn.Linear(embed_size, embed_size)
+        self.lin_v = nn.Linear(embed_size, embed_size)
+
+    
+    def forward(self, query, key, value, mask = None):
+        """
+            query : (batch_size, seq_len, embed_size)
+            key : (batch_size, seq_len, embed_size) 
+            value : (batch_size, seq_len, embed_size)
+        """
+
+        Q = self.lin_q(query)
+        K = self.lin_k(key)
+        V = self.lin_v(value)
+
+        Q = Q.view(Q.shape[0], Q.shape[1], self.num_heads, self.head_dim)
+        K = K.view(K.shape[0], K.shape[1], self.num_heads, self.head_dim)
+
+        attention_scores = torch.einsum("bqhd,bkhd->bhqk", Q, K) / (self.head_dim ** 0.5)
+        
+        if mask is not None:
+            attention_mask = torch.zeros_like(attention_scores).to(self.device)
+            
+
+
+        
+        
         
