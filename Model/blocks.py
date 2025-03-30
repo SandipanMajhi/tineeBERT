@@ -12,7 +12,7 @@ class EmbeddingLayer(nn.Module):
         return self.embedding(x) * torch.sqrt(self.embed_size)
     
 
-class AbsolutePE(nn.Module):
+class SinusoidPE(nn.Module):
     def __init__(self, embed_size, seq_len, dropout = 0.2, device = "cpu"):
         super().__init__()
         self.device = device
@@ -43,7 +43,7 @@ class AbsolutePE(nn.Module):
 
 
 class MultiheadAttention(nn.Module):
-    def __init__(self, embed_size, num_heads, dropout = 0.2, device = "cpu"):
+    def __init__(self, embed_size, num_heads, device = "cpu"):
         super().__init__()
         assert embed_size % num_heads == 0, "Embedding size must be divisible by number of heads"
         self.device = device
@@ -54,6 +54,7 @@ class MultiheadAttention(nn.Module):
         self.lin_q = nn.Linear(embed_size, embed_size)
         self.lin_k = nn.Linear(embed_size, embed_size)
         self.lin_v = nn.Linear(embed_size, embed_size)
+        self.lin_out = nn.Linear(embed_size, embed_size)
 
     
     def forward(self, query, key, value, mask = None):
@@ -67,16 +68,62 @@ class MultiheadAttention(nn.Module):
         K = self.lin_k(key)
         V = self.lin_v(value)
 
+        Q = Q.contiguous()
+        K = K.contiguous()
+        V = V.contiguous()
+
         Q = Q.view(Q.shape[0], Q.shape[1], self.num_heads, self.head_dim)
         K = K.view(K.shape[0], K.shape[1], self.num_heads, self.head_dim)
+        V = V.view(V.shape[0], V.shape[1], self.num_heads, self.head_dim)
 
         attention_scores = torch.einsum("bqhd,bkhd->bhqk", Q, K) / (self.head_dim ** 0.5)
         
         if mask is not None:
             attention_mask = torch.zeros_like(attention_scores).to(self.device)
-            
+            un_attention_indices = torch.argwhere(mask == 0)
+            attention_mask[un_attention_indices[:,0], :, un_attention_indices[:,1], :] = -1e10
+            attention_mask[un_attention_indices[:,0], :, :, un_attention_indices[:,1]] = -1e10
+
+        attention_scores = attention_scores + attention_mask
+        attention_weights = F.softmax(attention_scores, dim = -1)
+        attention_output = torch.einsum("bhqk,bkhd->bqhd", attention_weights, V)
+        attention_output = attention_output.view(attention_output.shape[0], attention_output.shape[1], -1)
+
+        attention_output = self.lin_out(attention_output)
+        return attention_output
 
 
-        
-        
-        
+class FeedForward(nn.Module):
+    def __init__(self, embed_size, hidden_size, dropout = 0.2):
+        super().__init__()
+        self.linear1 = nn.Linear(embed_size, hidden_size)
+        self.dropout = nn.Dropout(dropout)
+        self.linear2 = nn.Linear(hidden_size, embed_size)
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        x = self.linear1(x)
+        x = self.relu(x)
+        x = self.dropout(x)
+        x = self.linear2(x)
+        return x
+    
+
+class EncoderLayer(nn.Module):
+    def __init__(self, embed_size, num_heads, hidden_size, dropout = 0.2, device = "cpu"):
+        super().__init__()
+
+        self.device = device
+        self.attention = MultiheadAttention(embed_size, num_heads, device)
+        self.feed_forward = FeedForward(embed_size, hidden_size, dropout)
+        self.norm1 = nn.LayerNorm(embed_size)
+        self.norm2 = nn.LayerNorm(embed_size)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x, mask = None):
+        attention_output = self.attention(x, x, x, mask)
+        x = self.norm1(x + self.dropout(attention_output))
+        ff_out = self.feed_forward(x)
+        x = self.norm2(x + self.dropout(ff_out))
+        return x
+       
