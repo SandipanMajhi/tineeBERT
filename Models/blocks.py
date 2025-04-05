@@ -94,7 +94,7 @@ class MultiheadAttention(nn.Module):
 
 
 class FeedForward(nn.Module):
-    def __init__(self, embed_size, hidden_size, dropout = 0.2):
+    def __init__(self, embed_size, hidden_size, dropout = 0.1):
         super().__init__()
         self.linear1 = nn.Linear(embed_size, hidden_size)
         self.dropout = nn.Dropout(dropout)

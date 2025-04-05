@@ -79,8 +79,9 @@ class MaskedData:
         collate_ = Collator(max_tokens=max_tokens, mask_rate=mask_rate)
 
         text_dataloader = DataLoader(dataset=text_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_)
+        unique_vocab = { v[0] : k for k, v in collate_.mlm_tokenizer.bpe_model.inverse_vocab.items()}
 
-        return text_dataloader
+        return text_dataloader, unique_vocab
 
 
 

@@ -19,8 +19,10 @@ class TineeBERT(nn.Module):
         self.positional_encoding = SinusoidPE(embed_size, seqlen, device = device)
         
         self.encoders = nn.ModuleList([
-            EncoderLayer(embed_size, num_heads = num_heads, device = device) for _ in range(num_repeats)
-        ]) 
+            EncoderLayer(embed_size = embed_size, num_heads = num_heads, hidden_size = embed_size, device = device) for _ in range(num_repeats)
+        ])
+
+        self.decoder = nn.Linear(embed_size, vocab_size) 
 
 
     def forward(self, x, mask = None):
@@ -30,7 +32,8 @@ class TineeBERT(nn.Module):
         for encoder in self.encoders:
             x = encoder(x, mask = mask)
 
-        return x
+        logits = self.decoder(x)
+        return logits
 
 
 
