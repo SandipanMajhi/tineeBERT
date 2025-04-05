@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from Model.blocks import EmbeddingLayer, SinusoidPE, MultiheadAttention, FeedForward, EncoderLayer
+from Models.blocks import EmbeddingLayer, SinusoidPE, MultiheadAttention, FeedForward, EncoderLayer
 
 
 class TineeBERT(nn.Module):
