@@ -7,7 +7,9 @@ from utils.loader import MaskedData
 from torch.optim.lr_scheduler import LambdaLR
 import pandas as pd
 
+from tqdm import tqdm
 
+torch.cuda.empty_cache()
 
 def lr_lambda(current_step, num_warmup_steps = 10000, num_training_steps = 1000000):
     if current_step < num_warmup_steps:
@@ -17,7 +19,8 @@ def lr_lambda(current_step, num_warmup_steps = 10000, num_training_steps = 10000
                         float(max(1, num_training_steps - num_warmup_steps)))
 
 if __name__ == "__main__":
-    checkpoint_path = ""
+    checkpoint_path = "Checkpoints"
+    optimizer_path = "Optimizer_States"
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     training_steps = 1000000
@@ -30,13 +33,46 @@ if __name__ == "__main__":
 
     loss_fn = nn.CrossEntropyLoss(ignore_index=-100)
 
-    with torch.no_grad():
+    bert_model = bert_model.to(device)
+
+    training_history = {
+        "loss" : []
+    }
+
+    for step in tqdm(range(training_steps)):
+
+        steploss = 0
+
+        bert_model.train()
         for batch in textloader:
+            optimizer.zero_grad()
             tokenized_texts, attention_masks, targets = batch 
+
+            tokenized_texts = tokenized_texts.to(device)
+            attention_masks = attention_masks.to(device)
+            targets = targets.to(device)
+
             output = bert_model(tokenized_texts, attention_masks)
             loss = loss_fn(output.view(-1, len(vocab)), targets.view(-1))
-            print(output.shape)
-            print(loss)
-            break
+
+            loss.backward()
+            optimizer.step()
+            scheduler.step() 
+
+            steploss += loss.item()
+        
+        training_history["loss"].append(steploss / len(textloader))
+
+        if step  % 100 == 0:
+            torch.save(bert_model.state_dict(), f"{checkpoint_path}/model_checkpoint.pt")
+            torch.save(optimizer.state_dict(), f"{optimizer_path}/optimizer_checkpoint.pt")
+            torch.save(scheduler.state_dict(), f"{optimizer_path}/scheduler_checkpoint.pt")
+            torch.save(step, f"{checkpoint_path}/epoch.pt")
+            torch.save(training_history, f"{checkpoint_path}/history.pt")
+
+            print(f"Epoch - {step} --- Loss = {training_history['loss'][-1]}")
+
+
+
 
     

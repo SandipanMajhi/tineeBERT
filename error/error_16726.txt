@@ -1,0 +1,27 @@
+  0%|          | 0/1000000 [00:00<?, ?it/s]  0%|          | 0/1000000 [00:34<?, ?it/s]
+Traceback (most recent call last):
+  File "/raid/plabanai/Sandipan_AI/tineeBERT/main.py", line 55, in <module>
+    output = bert_model(tokenized_texts, attention_masks)
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/raid/plabanai/Sandipan_AI/tineeBERT/Models/bert.py", line 33, in forward
+    x = encoder(x, mask = mask)
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/raid/plabanai/Sandipan_AI/tineeBERT/Models/blocks.py", line 126, in forward
+    attention_output = self.attention(x, x, x, mask)
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/raid/plabanai/Sandipan_AI/tineeBERT/Models/blocks.py", line 81, in forward
+    attention_scores = torch.einsum("bqhd,bkhd->bhqk", Q, K) / (self.head_dim ** 0.5)
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 4.00 GiB. GPU 0 has a total capacity of 79.11 GiB of which 2.69 GiB is free. Including non-PyTorch memory, this process has 76.41 GiB memory in use. Of the allocated memory 71.64 GiB is allocated by PyTorch, and 4.12 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

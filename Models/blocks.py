@@ -36,7 +36,7 @@ class SinusoidPE(nn.Module):
         Args:
             x: (batch_size, seq_len, embed_size)
         """
-        x = x + self.positional_encoding
+        x = x + self.positional_encoding.to(x.device)
         x = self.dropout(x)
         return x
     
@@ -64,6 +64,8 @@ class MultiheadAttention(nn.Module):
             value : (batch_size, seq_len, embed_size)
         """
 
+        device = query.device
+
         Q = self.lin_q(query)
         K = self.lin_k(key)
         V = self.lin_v(value)
@@ -84,7 +86,7 @@ class MultiheadAttention(nn.Module):
             attention_mask[un_attention_indices[:,0], :, un_attention_indices[:,1], :] = -1e10
             attention_mask[un_attention_indices[:,0], :, :, un_attention_indices[:,1]] = -1e10
 
-        attention_scores = attention_scores + attention_mask
+        attention_scores = attention_scores + attention_mask.to(device)
         attention_weights = F.softmax(attention_scores, dim = -1)
         attention_output = torch.einsum("bhqk,bkhd->bqhd", attention_weights, V)
         attention_output = attention_output.reshape(attention_output.shape[0], attention_output.shape[1], -1)

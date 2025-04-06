@@ -1,0 +1,30 @@
+  0%|          | 0/1000000 [00:00<?, ?it/s]  0%|          | 0/1000000 [00:09<?, ?it/s]
+Traceback (most recent call last):
+  File "/raid/plabanai/Sandipan_AI/tineeBERT/main.py", line 56, in <module>
+    loss = loss_fn(output.view(-1, len(vocab)), targets.view(-1))
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/loss.py", line 1295, in forward
+    return F.cross_entropy(
+           ~~~~~~~~~~~~~~~^
+        input,
+        ^^^^^^
+    ...<4 lines>...
+        label_smoothing=self.label_smoothing,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/functional.py", line 3494, in cross_entropy
+    return torch._C._nn.cross_entropy_loss(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        input,
+        ^^^^^^
+    ...<4 lines>...
+        label_smoothing,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 36.62 GiB. GPU 0 has a total capacity of 79.11 GiB of which 21.31 GiB is free. Including non-PyTorch memory, this process has 57.79 GiB memory in use. Of the allocated memory 55.93 GiB is allocated by PyTorch, and 1.21 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

@@ -1,0 +1,20 @@
+  0%|          | 0/1000000 [00:00<?, ?it/s]  0%|          | 0/1000000 [00:14<?, ?it/s]
+Traceback (most recent call last):
+  File "/raid/plabanai/Sandipan_AI/tineeBERT/main.py", line 55, in <module>
+    output = bert_model(tokenized_texts, attention_masks)
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/raid/plabanai/Sandipan_AI/tineeBERT/Models/bert.py", line 35, in forward
+    logits = self.decoder(x)
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 36.62 GiB. GPU 0 has a total capacity of 79.11 GiB of which 4.66 GiB is free. Process 863183 has 47.44 GiB memory in use. Including non-PyTorch memory, this process has 26.98 GiB memory in use. Of the allocated memory 25.31 GiB is allocated by PyTorch, and 1.02 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

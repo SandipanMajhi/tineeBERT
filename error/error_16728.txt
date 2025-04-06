@@ -1,0 +1,20 @@
+  0%|          | 0/1000000 [00:00<?, ?it/s]  0%|          | 0/1000000 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "/raid/plabanai/Sandipan_AI/tineeBERT/main.py", line 55, in <module>
+    output = bert_model(tokenized_texts, attention_masks)
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/raid/plabanai/Sandipan_AI/tineeBERT/Models/bert.py", line 30, in forward
+    x = self.positional_encoding(x)
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1739, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/plabanai/miniconda3/envs/bert/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1750, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/raid/plabanai/Sandipan_AI/tineeBERT/Models/blocks.py", line 39, in forward
+    x = x + self.positional_encoding.to(x.device)
+        ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+RuntimeError: The size of tensor a (256) must match the size of tensor b (512) at non-singleton dimension 1
