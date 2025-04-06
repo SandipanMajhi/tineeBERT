@@ -9,7 +9,7 @@ class EmbeddingLayer(nn.Module):
         self.embed_size = embed_size
 
     def forward(self, x):
-        return self.embedding(x) * torch.sqrt(self.embed_size)
+        return self.embedding(x) * (self.embed_size ** 0.5)
     
 
 class SinusoidPE(nn.Module):
@@ -87,7 +87,7 @@ class MultiheadAttention(nn.Module):
         attention_scores = attention_scores + attention_mask
         attention_weights = F.softmax(attention_scores, dim = -1)
         attention_output = torch.einsum("bhqk,bkhd->bqhd", attention_weights, V)
-        attention_output = attention_output.view(attention_output.shape[0], attention_output.shape[1], -1)
+        attention_output = attention_output.reshape(attention_output.shape[0], attention_output.shape[1], -1)
 
         attention_output = self.lin_out(attention_output)
         return attention_output
