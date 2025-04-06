@@ -22,7 +22,7 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
     training_steps = 1000000
     warmup_steps = 10000
-    
+
     textloader, vocab = MaskedData.create_dataloader(corpus_path="BookCorpus/books.pkl", batch_size=256, mask_rate=0.15, max_tokens=512)
     bert_model = TineeBERT(num_repeats=10, vocab_size=len(vocab), embed_size=768, seqlen=512, num_heads=16)
     optimizer = torch.optim.Adam(bert_model.parameters(), lr = 1e-4)
@@ -34,7 +34,7 @@ if __name__ == "__main__":
         for batch in textloader:
             tokenized_texts, attention_masks, targets = batch 
             output = bert_model(tokenized_texts, attention_masks)
-            loss = loss_fn(output, targets)
+            loss = loss_fn(output.view(-1, len(vocab)), targets.view(-1))
             print(output.shape)
             print(loss)
             break
