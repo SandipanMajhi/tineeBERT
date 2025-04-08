@@ -1,7 +1,7 @@
 import pandas as pd
 from tqdm import tqdm
 import torch
-from torch.utils.data import DataLoader, Dataset
+from torch.utils.data import DataLoader, Dataset, DistributedSampler
 
 from CustomBPE.Model.Tokenizer import AutoTokenizer, MLMTokenizer
 import pickle as pkl
@@ -79,6 +79,20 @@ class MaskedData:
         collate_ = Collator(max_tokens=max_tokens, mask_rate=mask_rate)
 
         text_dataloader = DataLoader(dataset=text_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_)
+        
+        return text_dataloader, collate_.mlm_tokenizer.bpe_model.vocab
+    
+
+    @classmethod
+    def create_distributed_dataloader(cls, corpus_path, batch_size = 128, mask_rate = 0.15, max_tokens = 512):
+        with open(corpus_path, "rb") as fp:
+            texts = pkl.load(fp)
+
+        text_dataset = MaskedDataset(texts=texts)
+        collate_ = Collator(max_tokens=max_tokens, mask_rate=mask_rate)
+        sampler = DistributedSampler(text_dataset)
+
+        text_dataloader = DataLoader(dataset=text_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_, sampler=sampler)
         
         return text_dataloader, collate_.mlm_tokenizer.bpe_model.vocab
 
