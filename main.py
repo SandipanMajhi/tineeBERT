@@ -22,8 +22,8 @@ if __name__ == "__main__":
     training_steps = 1000000
     warmup_steps = 10000
 
-    textloader, vocab = MaskedData.create_dataloader(corpus_path="BookCorpus/books.pkl", batch_size=32, mask_rate=0.15, max_tokens=512)
-    bert_model = TineeBERT(num_repeats=10, vocab_size=len(vocab), embed_size=512, seqlen=512, num_heads=8)
+    textloader, vocab = MaskedData.create_dataloader(corpus_path="BookCorpus/books.pkl", batch_size=32, mask_rate=0.15, max_tokens=256)
+    bert_model = TineeBERT(num_repeats=10, vocab_size=len(vocab), embed_size=1024, seqlen=256, num_heads=8)
     optimizer = torch.optim.Adam(bert_model.parameters(), lr = 1e-4)
 
 
@@ -73,11 +73,11 @@ if __name__ == "__main__":
         training_history["loss"].append(steploss)
 
         if update_step  % 100 == 0:
-            torch.save(bert_model.state_dict(), f"{checkpoint_path}/model_checkpoint_v2.pt")
-            torch.save(optimizer.state_dict(), f"{optimizer_path}/optimizer_checkpoint_v2.pt")
-            torch.save(scheduler.state_dict(), f"{optimizer_path}/scheduler_checkpoint_v2.pt")
-            torch.save(update_step, f"{checkpoint_path}/epoch_v2.pt")
-            torch.save(training_history, f"{checkpoint_path}/history_v2.pt")
+            torch.save(bert_model.state_dict(), f"{checkpoint_path}/model_checkpoint_v3.pt")
+            torch.save(optimizer.state_dict(), f"{optimizer_path}/optimizer_checkpoint_v3.pt")
+            torch.save(scheduler.state_dict(), f"{optimizer_path}/scheduler_checkpoint_v3.pt")
+            torch.save(update_step, f"{checkpoint_path}/epoch_v3.pt")
+            torch.save(training_history, f"{checkpoint_path}/history_v3.pt")
 
             print(f"Step- {update_step} --- Loss = {training_history['loss'][-1]}")
 

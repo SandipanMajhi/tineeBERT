@@ -1,5 +1,2 @@
-["The main issue is whether Raj's security camera outside his violate the right to privacy his neighbours not. 
-To determine concerned case, we need to look at trespass and Raj trespassing in his neighbour's property via his camera set 
-First the security camera in question covers significant area Raj's neighbor's properties. 
-BothRaj and his neighbors (Vjay andKaran are making sound arguments their keep and remove the camera respectively. 
-But looking at it proportionately,Vijay's andKaran's tocy and fre enjoy their property supersedes Raj's need to increase his security Raj's is inferior the present context because their are other alternatives which could help Raj meet his desired like increasing security personnel or install more lights. Comparatively Vijay Karan do not have other alternative. Second,Raj's argument the security camera outside his house is for the collective benefit be countered by principle of decision making. Raj can't unilaterally decide and put up a private security camera outside his house covers significant portion of his neighbor'sies. T problem increased crime rate in the area is a collective one and thereby should be resolved by keeping collective interests at thee. Therefore, as part of neighbor assation,  will order security camera outside Raj's house that camera clearly indicates a trespass on aj part while trespass may not be physical per se the presence of a camerainges upon Vijaya's and Karan's right to enjoy property freely without any restrictions."]
+v2 = seqlen 512, embed 512
+v3 = seqlen 256, embed 1024
