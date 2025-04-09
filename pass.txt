@@ -1,2 +1,5 @@
 v2 = seqlen 512, embed 512
-v3 = seqlen 256, embed 1024
+v3 = seqlen 256, embed 1024, mask rate = 0.2
+v4 = embed 2048, mask rate = 0.2
+
+### All tests above wrong ###

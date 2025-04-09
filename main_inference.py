@@ -18,9 +18,9 @@ if __name__ == "__main__":
     # device = "cpu"
 
     mlm_tokenizer = MLMTokenizer(truncation_side="right", from_pretrained=True, max_tokens=512)
-    textloader, vocab = MaskedData.create_dataloader(corpus_path="BookCorpus/books.pkl", batch_size=4, mask_rate=0.15, max_tokens=512)
-    bert_model = TineeBERT(num_repeats=10, vocab_size=len(vocab), embed_size=512, seqlen=512, num_heads=8)
-    bert_model.load_state_dict(torch.load("Checkpoints/model_checkpoint_v2.pt", weights_only=True))
+    textloader, vocab = MaskedData.create_dataloader(corpus_path="BookCorpus/books.pkl", batch_size=1, mask_rate=0.15, max_tokens=256)
+    bert_model = TineeBERT(num_repeats=10, vocab_size=len(vocab), embed_size=1024, seqlen=256, num_heads=8)
+    bert_model.load_state_dict(torch.load("Checkpoints/model_checkpoint_v1.pt", weights_only=True))
 
     bert_model = bert_model.to(device)
 
@@ -32,6 +32,9 @@ if __name__ == "__main__":
             tokenized_texts = tokenized_texts.to(device)
             attention_masks = attention_masks.to(device)
             targets = targets.to(device)
+
+            print(attention_masks)
+            print(tokenized_texts)
 
             logits = bert_model(tokenized_texts, attention_masks)
             predicted_seq = F.softmax(logits, dim = -1)
