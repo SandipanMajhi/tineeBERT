@@ -3,3 +3,5 @@ v3 = seqlen 256, embed 1024, mask rate = 0.2
 v4 = embed 2048, mask rate = 0.2
 
 ### All tests above wrong ###
+v1 = with scheduler
+v2 = no scheduler lr = 5e-5 16 attention heads

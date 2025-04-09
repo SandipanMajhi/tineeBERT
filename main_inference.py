@@ -17,7 +17,7 @@ if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
     # device = "cpu"
 
-    mlm_tokenizer = MLMTokenizer(truncation_side="right", from_pretrained=True, max_tokens=512)
+    mlm_tokenizer = MLMTokenizer(truncation_side="right", from_pretrained=True, max_tokens=256)
     textloader, vocab = MaskedData.create_dataloader(corpus_path="BookCorpus/books.pkl", batch_size=1, mask_rate=0.15, max_tokens=256)
     bert_model = TineeBERT(num_repeats=10, vocab_size=len(vocab), embed_size=1024, seqlen=256, num_heads=8)
     bert_model.load_state_dict(torch.load("Checkpoints/model_checkpoint_v1.pt", weights_only=True))
@@ -33,18 +33,25 @@ if __name__ == "__main__":
             attention_masks = attention_masks.to(device)
             targets = targets.to(device)
 
-            print(attention_masks)
-            print(tokenized_texts)
+            target_ids = torch.where(targets != -100)
 
             logits = bert_model(tokenized_texts, attention_masks)
             predicted_seq = F.softmax(logits, dim = -1)
             predicted_seq = torch.argmax(predicted_seq, dim = -1)
-            print(f"Logits shape = {logits.shape}")
-            print("Before BERT:")
-            print(tokenized_texts)
-            print(mlm_tokenizer.batch_decode(tokenized_texts))
 
-            print("After BERT:")
+            predicted_ = []
+            target_ = []
+
+            for i in range(target_ids[0].shape[0]):
+                target_.append(targets[target_ids[0][i]][target_ids[1][i]])
+                predicted_.append(predicted_seq[target_ids[0][i]][target_ids[1][i]])
+            
+            print(target_)
+            print(predicted_)
+
+            print(targets)
             print(predicted_seq)
+
             print(mlm_tokenizer.batch_decode(predicted_seq))
+
             break
